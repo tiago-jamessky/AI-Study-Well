@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>溫習戰友 Study Well</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-teal: #78B7BB;
+            --soft-green: #A8BFA1;
+            --bg-cream: #F9FBF9;
+            --text-dark: #3E4A4B;
+            --text-light: #707B7C;
+            --accent-yellow: #FFD56B;
+            --transition: all 0.3s ease;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-cream);
+            overflow: hidden; /* 防止整個頁面滾動，讓內部 screen 滾動 */
+        }
+
+        /* 模擬手機 App 容器 */
+        #app-viewport {
+            width: 100%;
+            height: 100%;
+            max-width: 500px; /* 如果在平板或電腦看，限制寬度 */
+            margin: 0 auto;
+            position: relative;
+            background-color: var(--bg-cream);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--bg-cream);
+            z-index: 10;
+        }
+
+        .screen.active { display: flex; animation: slideIn 0.3s ease-out; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* UI Elements */
+        .btn-primary {
+            background: var(--primary-teal);
+            color: white; border: none;
+            padding: 16px; border-radius: 16px;
+            font-size: 16px; font-weight: 600;
+            cursor: pointer; width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(120, 183, 187, 0.3);
+        }
+
+        .btn-outline {
+            background: white; border: 2px solid var(--primary-teal);
+            color: var(--primary-teal); padding: 12px;
+            border-radius: 16px; font-weight: 600;
+        }
+
+        .card {
+            background: white; padding: 18px;
+            border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 12px; border: 1px solid #F0F0F0;
+        }
+
+        .progress-bar {
+            height: 6px; background: #EEE; border-radius: 3px;
+            margin-bottom: 24px; width: 100%;
+        }
+
+        .progress-fill {
+            height: 100%; background: var(--primary-teal);
+            border-radius: 3px; transition: width 0.5s;
+        }
+
+        .option-chip {
+            padding: 14px; border: 2px solid #F0F0F0;
+            border-radius: 12px; margin-bottom: 10px;
+            font-size: 14px; transition: var(--transition);
+        }
+
+        .option-chip.selected {
+            border-color: var(--primary-teal);
+            background: rgba(120, 183, 187, 0.08);
+            font-weight: 600;
+        }
+
+        .bilingual { font-size: 11px; color: var(--text-light); text-transform: uppercase; display: block; margin-top: 2px; }
+
+        h1 { color: var(--primary-teal); font-size: 24px; margin-bottom: 8px; }
+        h2 { font-size: 20px; margin-top: 0; }
+        p { font-size: 14px; color: var(--text-light); line-height: 1.5; }
+
+        .nav-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            height: 70px; background: white; border-top: 1px solid #EEE;
+            display: flex; justify-content: space-around; align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item { text-align: center; font-size: 10px; color: #CCC; }
+        .nav-item.active { color: var(--primary-teal); }
+
+        /* Dashboard Specific */
+        .timeline-card {
+            border-left: 4px solid var(--primary-teal);
+            padding-left: 15px; margin-left: 10px;
+            position: relative; padding-bottom: 20px;
+        }
+        .timeline-card::before {
+            content: ''; position: absolute; left: -9px; top: 0;
+            width: 14px; height: 14px; background: white;
+            border: 3px solid var(--primary-teal); border-radius: 50%;
+        }
+
+        .badge-xp {
+            background: var(--accent-yellow); padding: 4px 10px;
+            border-radius: 12px; font-weight: bold; font-size: 12px;
+        }
+
+        .mt-auto { margin-top: auto; }
+        .text-center { text-align: center; }
+
+    </style>
+</head>
+<body>
+
+<div id="app-viewport">
+
+    <!-- 1. Welcome -->
+    <div id="screen-welcome" class="screen active" style="justify-content: center; text-align: center;">
+        <div style="font-size: 60px; margin-bottom: 20px;">🌿</div>
+        <h1>溫習戰友<br>Study Well</h1>
+        <p>為 DSE 考生而設的 AI 夥伴<br><span class="bilingual">Your AI Study Companion for HKDSE</span></p>
+        <div class="mt-auto">
+            <button class="btn-primary" onclick="showScreen('screen-step1')">
+                開始建立計劃<br><span style="font-size: 12px;">Start My Plan</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Onboarding Step 1 -->
+    <div id="screen-step1" class="screen">
+        <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+        <h2>你現在讀幾年級？<br><span class="bilingual">What is your grade?</span></h2>
+        <div class="option-chip" onclick="selectChip(this)">中五 Form 5</div>
+        <div class="option-chip selected" onclick="selectChip(this)">中六 Form 6</div>
+        
+        <h2 style="margin-top: 20px;">目標 DSE 嗎？<br><span class="bilingual">Preparing for HKDSE?</span></h2>
+        <div class="option-chip selected">是的 Yes</div>
+        
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-step2')">下一步 Next</button>
+    </div>
+
+    <!-- 3. Onboarding Step 2: Subjects -->
+    <div id="screen-step2" class="screen">
+        <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
+        <h2>你的選修科 (Electives)<br><span class="bilingual">Choose your subjects</span></h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="option-chip" onclick="selectChip(this)">Biology 生物</div>
+            <div class="option-chip" onclick="selectChip(this)">Chem 化學</div>
+            <div class="option-chip" onclick="selectChip(this)">Physics 物理</div>
+            <div class="option-chip selected" onclick="selectChip(this)">Econ 經濟</div>
+            <div class="option-chip selected" onclick="selectChip(this)">BAFS 企會財</div>
+            <div class="option-chip" onclick="selectChip(this)">History 歷史</div>
+        </div>
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-step3')">下一步 Next</button>
+    </div>
+
+    <!-- 4. Onboarding Step 3: Wellness -->
+    <div id="screen-step3" class="screen">
+        <div class="progress-bar"><div class="progress-fill" style="width: 70%;"></div></div>
+        <h2>身心平衡與興趣<br><span class="bilingual">Wellness & Hobbies</span></h2>
+        <p>你希望每天保留多少個人時間？<br><span class="bilingual">Personal time goal?</span></p>
+        <div class="option-chip selected" onclick="selectChip(this)">60 mins (推薦 Recommended)</div>
+        <div class="option-chip" onclick="selectChip(this)">30 mins</div>
+        
+        <p>你喜歡做什麼來放鬆？</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="option-chip selected" onclick="selectChip(this)">🎸 音樂</div>
+            <div class="option-chip" onclick="selectChip(this)">🏃 運動</div>
+            <div class="option-chip" onclick="selectChip(this)">🎨 創作</div>
+            <div class="option-chip" onclick="selectChip(this)">🎮 遊戲</div>
+        </div>
+        <button class="btn-primary mt-auto" onclick="goDashboard()">生成計劃 Generate Plan</button>
+    </div>
+
+    <!-- 5. Loading -->
+    <div id="screen-loading" class="screen" style="justify-content: center; text-align: center;">
+        <div class="text-center">
+            <div style="font-size: 40px; margin-bottom: 20px; animation: pulse 1s infinite alternate;">🧠</div>
+            <h2>AI 正在為你排期...</h2>
+            <p>正在平衡你的學業目標與身心健康</p>
+        </div>
+    </div>
+
+    <!-- 6. Dashboard -->
+    <div id="screen-dashboard" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+            <div>
+                <h2 style="margin:0;">今日計劃</h2>
+                <span class="bilingual">Today's Schedule</span>
+            </div>
+            <div class="badge-xp">Lv. 1 • 0 XP</div>
+        </div>
+
+        <div class="card" style="background: var(--primary-teal); color: white;">
+            <div style="display: flex; justify-content: space-between;">
+                <span>學習進度 Progress</span>
+                <span>0%</span>
+            </div>
+            <div style="height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin: 10px 0;"></div>
+            <p style="color: white; margin:0; font-size: 12px;">今日還有 3 個 Session，加油！</p>
+        </div>
+
+        <div class="timeline-card">
+            <span style="font-size: 12px; color: var(--text-light);">16:30 - 17:30</span><br>
+            <strong>Mathematics: Calculus</strong>
+            <button class="btn-primary" style="padding: 8px; font-size: 12px;" onclick="showScreen('screen-session')">開始溫習 Start</button>
+        </div>
+
+        <div class="timeline-card" style="border-color: #FFB347;">
+            <span style="font-size: 12px; color: var(--text-light);">17:45 - 18:30</span><br>
+            <strong>🎸 個人興趣：彈結他</strong>
+            <p style="font-size: 12px; margin: 4px 0;">AI 建議：讀完數放鬆大腦，有助記憶。</p>
+        </div>
+
+        <div class="nav-bar">
+            <div class="nav-item active">🏠<br>Home</div>
+            <div class="nav-item">📅<br>Plan</div>
+            <div class="nav-item">📊<br>Stats</div>
+            <div class="nav-item">👤<br>Profile</div>
+        </div>
+    </div>
+
+    <!-- 7. Session Detail -->
+    <div id="screen-session" class="screen">
+        <h2 style="margin-bottom: 5px;">Mathematics</h2>
+        <span class="bilingual">Focus: Differentiation (微積分)</span>
+        <div class="card" style="margin-top: 20px; text-align: center; padding: 40px 0;">
+            <div style="font-size: 48px; font-weight: bold; color: var(--primary-teal);">25:00</div>
+            <p>Pomodoro Timer</p>
+        </div>
+        <div class="card">
+            <strong>AI Tips:</strong>
+            <p style="margin: 5px 0 0;">這部分你之前的 Mock 分數較弱，建議先做 2 題基礎題熱身。</p>
+        </div>
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-recall')">完成溫習 Finish</button>
+    </div>
+
+    <!-- 8. Active Recall -->
+    <div id="screen-recall" class="screen">
+        <h2>主動回憶 Active Recall</h2>
+        <p>請嘗試不看筆記，用一兩句話寫下剛才學到的重點：</p>
+        <textarea style="width: 100%; height: 120px; border-radius: 12px; border: 1px solid #DDD; padding: 10px; font-family: inherit;" placeholder="我剛才學到了..."></textarea>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <div style="font-size: 30px; margin-bottom: 5px;">🎙️</div>
+            <p style="font-size: 12px;">或使用語音輸入，AI 會幫你核對概念</p>
+        </div>
+
+        <button class="btn-primary mt-auto" onclick="finishAll()">提交回饋 Submit</button>
+    </div>
+
+</div>
+
+<script>
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function selectChip(el) {
+        el.classList.toggle('selected');
+    }
+
+    function goDashboard() {
+        showScreen('screen-loading');
+        setTimeout(() => {
+            showScreen('screen-dashboard');
+        }, 1500);
+    }
+
+    function finishAll() {
+        alert("做得好！獲得 +80 XP！已為你調整明天的學習難度。");
+        showScreen('screen-dashboard');
+    }
+</script>
+
+<style>
+    @keyframes pulse {
+        from { transform: scale(1); opacity: 1; }
+        to { transform: scale(1.1); opacity: 0.7; }
+    }
+</style>
+
+</body>
+</html>
