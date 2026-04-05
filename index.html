@@ -17,96 +17,66 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            background-color: var(--bg-cream);
-            overflow: hidden;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Inter', 'Noto Sans TC', sans-serif; background-color: #DDD; display: flex; justify-content: center; align-items: center; }
 
         #app-viewport {
-            width: 100%; height: 100%;
-            max-width: 500px; margin: 0 auto;
-            position: relative;
-            background-color: var(--bg-cream);
-            display: flex; flex-direction: column;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%; height: 100%; max-width: 430px; 
+            background-color: var(--bg-cream); position: relative;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,0,0,0.2);
         }
 
         .screen {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: none; flex-direction: column;
-            padding: 24px; overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            background: var(--bg-cream);
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; background: var(--bg-cream);
+            z-index: 10; padding: 24px; padding-bottom: 90px; overflow-y: auto;
         }
+        .screen.active { display: flex; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .screen.active { display: flex; animation: slideIn 0.3s ease-out; }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .btn-primary {
-            background: var(--primary-teal); color: white; border: none;
-            padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 600;
-            cursor: pointer; width: 100%; margin-top: 10px;
-            box-shadow: 0 4px 12px rgba(120, 183, 187, 0.3);
-        }
-
-        .card {
-            background: white; padding: 18px; border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 12px;
-            border: 1px solid #F0F0F0;
-        }
-
-        .progress-bar { height: 6px; background: #EEE; border-radius: 3px; margin-bottom: 24px; width: 100%; }
+        .btn-primary { background: var(--primary-teal); color: white; border: none; padding: 18px; border-radius: 18px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 4px 15px rgba(120, 183, 187, 0.3); }
+        .card { background: white; padding: 18px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 12px; border: 1px solid #F0F0F0; }
+        .progress-bar { height: 6px; background: #E5EDED; border-radius: 3px; margin-bottom: 24px; width: 100%; }
         .progress-fill { height: 100%; background: var(--primary-teal); border-radius: 3px; transition: width 0.5s; }
-
-        /* 選項樣式 */
-        .option-chip {
-            padding: 14px; border: 2px solid #F0F0F0; border-radius: 12px;
-            margin-bottom: 10px; font-size: 14px; transition: var(--transition);
-            cursor: pointer; background: white;
-        }
-        .option-chip.selected {
-            border-color: var(--primary-teal); background: rgba(120, 183, 187, 0.08);
-            font-weight: 600; color: var(--primary-teal);
-        }
-
+        
+        .option-chip { padding: 14px; border: 2px solid #F0F0F0; border-radius: 12px; margin-bottom: 8px; font-size: 14px; cursor: pointer; background: white; text-align: center; }
+        .option-chip.selected { border-color: var(--primary-teal); background: rgba(120, 183, 187, 0.08); font-weight: 600; color: var(--primary-teal); }
         .bilingual { font-size: 11px; color: var(--text-light); text-transform: uppercase; display: block; margin-top: 2px; }
 
-        /* Timeline 樣式 */
-        .timeline-card {
-            border-left: 3px solid var(--primary-teal); padding-left: 15px;
-            margin-left: 10px; position: relative; padding-bottom: 15px;
-        }
-        .timeline-card::before {
-            content: ''; position: absolute; left: -8.5px; top: 0;
-            width: 14px; height: 14px; background: white;
-            border: 3px solid var(--primary-teal); border-radius: 50%;
-        }
-        .time-label { font-size: 12px; color: var(--text-light); font-weight: 600; }
+        /* Timeline & Mission Cards */
+        .timeline-card { border-left: 3px solid #EEE; padding-left: 15px; margin-left: 10px; position: relative; padding-bottom: 20px; }
+        .timeline-card::before { content: ''; position: absolute; left: -8.5px; top: 0; width: 14px; height: 14px; background: white; border: 3px solid #DDD; border-radius: 50%; }
 
-        .emoji-picker { display: flex; justify-content: space-between; padding: 15px 0; }
-        .emoji-item { font-size: 32px; filter: grayscale(1); opacity: 0.4; transition: 0.3s; cursor: pointer; }
+        /* 核心修改：Study Mission Card */
+        .mission-active {
+            background: white; border: 2px solid var(--primary-teal); border-radius: 20px;
+            padding: 18px; position: relative; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(120, 183, 187, 0.15);
+            transition: transform 0.2s;
+        }
+        .mission-active:active { transform: scale(0.97); }
+        .mission-active::after {
+            content: '➔'; position: absolute; right: 20px; top: 50%;
+            transform: translateY(-50%); color: var(--primary-teal); font-weight: bold; font-size: 20px;
+        }
+        .mission-tag {
+            background: var(--primary-teal); color: white; font-size: 10px; 
+            padding: 2px 8px; border-radius: 6px; font-weight: bold; margin-bottom: 5px; display: inline-block;
+        }
+        .xp-reward { font-size: 11px; color: #D4A017; font-weight: bold; margin-top: 5px; }
+
+        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 75px; background: white; border-top: 1px solid #EEE; display: none; justify-content: space-around; align-items: center; z-index: 100; }
+        .nav-bar.visible { display: flex; }
+        .nav-item { text-align: center; font-size: 10px; color: #BBB; flex: 1; }
+        .nav-item.active { color: var(--primary-teal); font-weight: bold; }
+
+        .emoji-picker { display: flex; justify-content: space-between; padding: 20px 0; }
+        .emoji-item { font-size: 36px; filter: grayscale(1); opacity: 0.4; cursor: pointer; transition: 0.3s; }
         .emoji-item.active { filter: grayscale(0); opacity: 1; transform: scale(1.2); }
-
-        .nav-bar {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            height: 70px; background: white; border-top: 1px solid #EEE;
-            display: flex; justify-content: space-around; align-items: center; z-index: 100;
-        }
-        .nav-item { text-align: center; font-size: 10px; color: #CCC; }
-        .nav-item.active { color: var(--primary-teal); }
-
-        .mt-auto { margin-top: auto; }
-        .text-center { text-align: center; }
+        
+        .timer-display { font-size: 50px; font-weight: bold; color: var(--primary-teal); margin: 20px 0; text-align: center; }
+        .xp-badge { background: var(--accent-yellow); color: var(--text-dark); padding: 10px 20px; border-radius: 30px; font-weight: 800; font-size: 24px; display: inline-block; margin: 20px 0; animation: bounce 1s infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
@@ -115,218 +85,266 @@
 
     <!-- 1. Welcome -->
     <div id="screen-welcome" class="screen active" style="justify-content: center; text-align: center;">
-        <div style="font-size: 60px; margin-bottom: 20px;">🌿</div>
-        <h1 style="color: var(--primary-teal);">溫習戰友<br>Study Well</h1>
-        <p>為 DSE 考生而設的 AI 夥伴<br><span class="bilingual">Your AI Study Companion for HKDSE</span></p>
-        <div class="mt-auto">
-            <button class="btn-primary" onclick="showScreen('screen-step1')">開始建立計劃 Start My Plan</button>
-        </div>
+        <div style="font-size: 60px; margin-bottom: 20px;">🍵</div>
+        <h1>溫習戰友 Study Well</h1>
+        <p>為 DSE 考生而設的 AI 夥伴<br><span class="bilingual">AI Study Companion for HKDSE Success</span></p>
+        <button class="btn-primary" onclick="showScreen('screen-step1')">開始建立計劃 Start Now</button>
     </div>
 
-    <!-- 2. Step 1: Grade (Single Select) -->
+    <!-- 2. Step 1: Grade -->
     <div id="screen-step1" class="screen">
-        <div class="progress-bar"><div class="progress-fill" style="width: 15%;"></div></div>
-        <h2>你現時就讀幾年級？<br><span class="bilingual">What is your current grade?</span></h2>
-        <div class="option-chip" data-type="grade" onclick="selectSingle(this)">中四 Form 4</div>
-        <div class="option-chip" data-type="grade" onclick="selectSingle(this)">中五 Form 5</div>
-        <div class="option-chip selected" data-type="grade" onclick="selectSingle(this)">中六 Form 6</div>
-        
-        <p style="margin-top:20px;">準備應考 DSE？</p>
-        <div class="option-chip selected">是的 Yes</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 10%;"></div></div>
+        <h2>你現時就讀幾年級？</h2>
+        <div class="option-chip" onclick="selectSingle(this, 'grade')">中四 Form 4</div>
+        <div class="option-chip" onclick="selectSingle(this, 'grade')">中五 Form 5</div>
+        <div class="option-chip selected" onclick="selectSingle(this, 'grade')">中六 Form 6</div>
         <button class="btn-primary mt-auto" onclick="showScreen('screen-step2')">下一步 Next</button>
     </div>
 
-    <!-- 3. Step 2: Subjects (Multi Select) -->
+    <!-- 3. Step 2: Subjects -->
     <div id="screen-step2" class="screen">
-        <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
-        <h2>你的選修科 (Electives)<br><span class="bilingual">Select your subjects</span></h2>
+        <div class="progress-bar"><div class="progress-fill" style="width: 20%;"></div></div>
+        <h2>你的選修科 (Electives)</h2>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="option-chip" onclick="selectMulti(this)">Biology 生物</div>
-            <div class="option-chip" onclick="selectMulti(this)">Chem 化學</div>
-            <div class="option-chip" onclick="selectMulti(this)">Physics 物理</div>
-            <div class="option-chip selected" onclick="selectMulti(this)">Econ 經濟</div>
-            <div class="option-chip selected" onclick="selectMulti(this)">BAFS 企會財</div>
-            <div class="option-chip" onclick="selectMulti(this)">ICT 資訊科技</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">Biology</div>
+            <div class="option-chip selected" onclick="this.classList.toggle('selected')">Economics</div>
+            <div class="option-chip selected" onclick="this.classList.toggle('selected')">BAFS</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">History</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">ICT</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">Physics</div>
         </div>
-        <button class="btn-primary mt-auto" onclick="showScreen('screen-step-scores')">下一步 Next</button>
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-mock-scores')">下一步 Next</button>
     </div>
 
-    <!-- 4. Step 3: Target Scores (New!) -->
-    <div id="screen-step-scores" class="screen">
-        <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
-        <h2>你的目標分數？<br><span class="bilingual">Target DSE Levels</span></h2>
-        
+    <!-- 4. Step 3: Mock Scores -->
+    <div id="screen-mock-scores" class="screen">
+        <div class="progress-bar"><div class="progress-fill" style="width: 35%;"></div></div>
+        <h2>目前 Mock Test 成績</h2>
         <div class="card">
-            <div style="display: flex; justify-content: space-between;">
-                <span>Mathematics 數學</span>
-                <span style="font-weight:bold; color: var(--primary-teal);">Level 5*</span>
-            </div>
-            <input type="range" min="1" max="7" value="6" style="width:100%; accent-color: var(--primary-teal);">
+            <div style="display: flex; justify-content: space-between;"><span>Mathematics</span><span id="v-m-c" style="font-weight:bold;">Level 3</span></div>
+            <input type="range" min="1" max="7" value="3" oninput="updateLevel(this, 'v-m-c')">
         </div>
-
         <div class="card">
-            <div style="display: flex; justify-content: space-between;">
-                <span>English 英文</span>
-                <span style="font-weight:bold; color: var(--primary-teal);">Level 5</span>
-            </div>
-            <input type="range" min="1" max="7" value="5" style="width:100%; accent-color: var(--primary-teal);">
+            <div style="display: flex; justify-content: space-between;"><span>English Language</span><span id="v-e-c" style="font-weight:bold;">Level 4</span></div>
+            <input type="range" min="1" max="7" value="4" oninput="updateLevel(this, 'v-e-c')">
         </div>
-
-        <p style="font-size: 12px;">AI 將根據目標差距調整練習難度。</p>
-        <button class="btn-primary mt-auto" onclick="showScreen('screen-step3')">下一步 Next</button>
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-target-scores')">下一步 Next</button>
     </div>
 
-    <!-- 5. Step 4: Wellness -->
-    <div id="screen-step3" class="screen">
-        <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
-        <h2>身心平衡設定<br><span class="bilingual">Wellness Balance</span></h2>
-        <p>你希望每日運動多久？</p>
-        <div class="option-chip selected" data-type="sport" onclick="selectSingle(this)">30 mins (基本)</div>
-        <div class="option-chip" data-type="sport" onclick="selectSingle(this)">60 mins (積極)</div>
-        
-        <p>想幾點上床睡覺？ (目標 Bedtime)</p>
-        <div class="option-chip selected" data-type="sleep" onclick="selectSingle(this)">23:00 - 00:00</div>
-        <div class="option-chip" data-type="sleep" onclick="selectSingle(this)">00:00 - 01:00</div>
-        
-        <button class="btn-primary mt-auto" onclick="showScreen('screen-step-wellbeing')">下一步 Next</button>
+    <!-- 5. Step 4: Target Scores -->
+    <div id="screen-target-scores" class="screen">
+        <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
+        <h2>目標 DSE 分數</h2>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between;"><span>Mathematics</span><span id="v-m-t" style="font-weight:bold; color:var(--primary-teal)">Level 5*</span></div>
+            <input type="range" min="1" max="7" value="6" oninput="updateLevel(this, 'v-m-t')">
+        </div>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between;"><span>English Language</span><span id="v-e-t" style="font-weight:bold; color:var(--primary-teal)">Level 5</span></div>
+            <input type="range" min="1" max="7" value="5" oninput="updateLevel(this, 'v-e-t')">
+        </div>
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-sport-pref')">下一步 Next</button>
     </div>
 
-    <!-- 6. Step 5: Wellbeing Check (New!) -->
-    <div id="screen-step-wellbeing" class="screen">
+    <!-- 6. Step 5: Sport Preference -->
+    <div id="screen-sport-pref" class="screen">
+        <div class="progress-bar"><div class="progress-fill" style="width: 65%;"></div></div>
+        <h2>你喜歡什麼運動？<br><span class="bilingual">Preferred Sports</span></h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="option-chip selected" onclick="this.classList.toggle('selected')">🏃 跑步 Running</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">🧘 瑜伽/拉筋 Yoga</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">🏀 球類運動 Ball games</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">🏋️ 健身 Gym</div>
+        </div>
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-hobbies')">下一步 Next</button>
+    </div>
+
+    <!-- 7. Step 6: Hobbies -->
+    <div id="screen-hobbies" class="screen">
         <div class="progress-bar"><div class="progress-fill" style="width: 80%;"></div></div>
-        <h2>最近心情如何？<br><span class="bilingual">Wellbeing Check-in</span></h2>
-        <p>你的壓力程度會直接影響 AI 生成的計劃強度。</p>
+        <h2>你平時有什麼興趣？</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="option-chip selected" onclick="this.classList.toggle('selected')">🎸 音樂放鬆</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">🎮 遊戲</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">🎨 創作繪畫</div>
+            <div class="option-chip" onclick="this.classList.toggle('selected')">🍳 烹飪</div>
+        </div>
+        <button class="btn-primary mt-auto" onclick="showScreen('screen-wellbeing')">下一步 Next</button>
+    </div>
+
+    <!-- 8. Step 7: Wellbeing -->
+    <div id="screen-wellbeing" class="screen">
+        <div class="progress-bar"><div class="progress-fill" style="width: 95%;"></div></div>
+        <h2>最近心情如何？</h2>
         <div class="emoji-picker">
-            <span class="emoji-item" onclick="selectEmoji(this)">😫</span>
-            <span class="emoji-item" onclick="selectEmoji(this)">😐</span>
-            <span class="emoji-item active" onclick="selectEmoji(this)">😊</span>
-            <span class="emoji-item" onclick="selectEmoji(this)">🔥</span>
+            <span class="emoji-item" onclick="setMood(this, '😫')">😫</span>
+            <span class="emoji-item" onclick="setMood(this, '😐')">😐</span>
+            <span class="emoji-item active" onclick="setMood(this, '😊')">😊</span>
+            <span class="emoji-item" onclick="setMood(this, '🔥')">🔥</span>
         </div>
-        <div class="card" style="margin-top:20px;">
-            <p id="mood-text" style="margin:0;">「狀態不錯，可以進行高效溫習。」</p>
-        </div>
+        <p id="mood-hint" class="text-center" style="color: var(--primary-teal); font-weight: 500;">狀態不錯，可以進行高效溫習！</p>
         <button class="btn-primary mt-auto" onclick="goDashboard()">生成 AI 計劃 Generate Plan</button>
     </div>
 
-    <!-- 7. Loading -->
-    <div id="screen-loading" class="screen" style="justify-content: center; text-align: center;">
-        <div style="font-size: 40px; animation: pulse 1s infinite alternate;">🧠</div>
-        <h2>正在為你定制個人化時間表...</h2>
-    </div>
-
-    <!-- 8. Dashboard (Countdown + New Schedule) -->
+    <!-- 9. Dashboard -->
     <div id="screen-dashboard" class="screen">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h2 style="margin:0;">👋 你好，戰友！</h2>
-            <div style="background: var(--accent-yellow); padding: 4px 10px; border-radius: 10px; font-weight: bold; font-size:12px;">Lv. 3</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h2 style="margin:0;">你好，戰友 👋</h2>
+            <div class="card" style="margin:0; padding:4px 10px; background:var(--accent-yellow); border:none; font-weight:bold; font-size:12px;">Lv. 3</div>
         </div>
-
-        <!-- DSE Countdown -->
         <div class="card" style="background: linear-gradient(135deg, #78B7BB, #A8BFA1); color: white; border: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <span style="font-size: 12px; opacity: 0.9;">距離 2025 HKDSE 還有</span>
-                    <div style="font-size: 32px; font-weight: bold;">182 天</div>
-                </div>
-                <div style="text-align: right;">
-                    <span style="font-size: 12px; opacity: 0.9;">今日進度</span>
-                    <div style="font-size: 20px; font-weight: bold;">35%</div>
-                </div>
+            <span style="font-size: 12px;">距離 2025 HKDSE 還有</span>
+            <div style="font-size: 32px; font-weight: bold;">182 天</div>
+        </div>
+        <h3 style="font-size: 16px; margin: 20px 0 10px;">今日全日計劃 Schedule</h3>
+        
+        <!-- 行程項目 -->
+        <div class="timeline-card" style="border-color:#CCC;"><span class="bilingual">12:30</span>🍱 午飯 Lunch</div>
+        
+        <!-- 核心升級：Mission Card 1 -->
+        <div class="timeline-card" style="padding-bottom: 30px;">
+            <div class="mission-active" onclick="openSession('Mathematics', 'Calculus (微積分基礎)')">
+                <span class="mission-tag">MISSION 01 • ACTIVE</span>
+                <span class="bilingual" style="margin-top:0;">14:00 - 15:30</span>
+                <strong>📚 溫習: Mathematics</strong>
+                <div class="xp-reward">🏆 Reward: +80 XP</div>
             </div>
         </div>
 
-        <h3 style="font-size: 16px; margin: 15px 0 10px;">今日時間表 Schedule</h3>
-
-        <div class="timeline-card">
-            <span class="time-label">12:30 - 13:30</span><br>
-            <strong>🍱 午飯及休息 Lunch Break</strong>
+        <div class="timeline-card" style="border-color: #FFB347;"><span class="bilingual">16:00</span>🏃 運動時間 Sport</div>
+        
+        <!-- 核心升級：Mission Card 2 -->
+        <div class="timeline-card" style="padding-bottom: 30px;">
+            <div class="mission-active" onclick="openSession('English Language', 'DSE Writing Skills')">
+                <span class="mission-tag">MISSION 02 • LOCKED</span>
+                <span class="bilingual" style="margin-top:0;">17:00 - 18:30</span>
+                <strong>📚 溫習: English Language</strong>
+                <div class="xp-reward">🏆 Reward: +85 XP</div>
+            </div>
         </div>
 
-        <div class="timeline-card">
-            <span class="time-label">14:00 - 15:30</span><br>
-            <strong>📚 溫習 Session 1: Mathematics</strong>
-            <p style="font-size: 11px; margin: 4px 0; color: var(--text-light);">重點：二次方程及圖像解析</p>
+        <div class="timeline-card" style="border-color: #FFB347;"><span class="bilingual">19:00</span>🎸 興趣時間 Hobby</div>
+        
+        <!-- 核心升級：Mission Card 3 -->
+        <div class="timeline-card" style="padding-bottom: 30px;">
+            <div class="mission-active" onclick="openSession('BAFS / Econ', 'Accounting Principles')">
+                <span class="mission-tag">MISSION 03</span>
+                <span class="bilingual" style="margin-top:0;">20:30 - 21:30</span>
+                <strong>📚 溫習: 選修科</strong>
+                <div class="xp-reward">🏆 Reward: +70 XP</div>
+            </div>
         </div>
 
-        <div class="timeline-card" style="border-color: #FFB347;">
-            <span class="time-label">16:00 - 16:45</span><br>
-            <strong>🏃 運動 Session 1: 輕量跑步 / 拉筋</strong>
-        </div>
+        <div class="timeline-card" style="border-color: #A8BFA1; padding-bottom: 50px;"><span class="bilingual">23:00</span>😴 目標睡覺 Bedtime</div>
+    </div>
 
-        <div class="timeline-card">
-            <span class="time-label">17:00 - 18:30</span><br>
-            <strong>📚 溫習 Session 2: English Language</strong>
+    <!-- 10. Timer Screen -->
+    <div id="screen-timer" class="screen">
+        <h2 id="timer-subject">Mathematics</h2>
+        <div class="card" style="border-left: 5px solid var(--primary-teal);">
+            <p id="timer-topic" style="font-weight:bold; color:var(--primary-teal);"></p>
+            <p style="font-size:12px; color:var(--text-light);">AI 建議：先看 5 分鐘筆記，再做 2 條題目。</p>
         </div>
+        <div class="timer-display" id="timer-clock">25:00</div>
+        <button id="btn-timer-control" class="btn-primary" onclick="toggleTimer()">開始任務 Start Mission</button>
+        <button class="btn-primary" style="background:#EEE; color:#333;" onclick="showScreen('screen-active-recall')">提前完成 Finish Early</button>
+    </div>
 
-        <div class="timeline-card" style="border-color: #FFB347;">
-            <span class="time-label">19:00 - 20:00</span><br>
-            <strong>🎸 個人興趣：音樂放鬆時間</strong>
+    <!-- 11. Active Recall -->
+    <div id="screen-active-recall" class="screen">
+        <h2 style="color: var(--primary-teal);">🧠 主動回憶 Active Recall</h2>
+        <p>你仲記唔記得剛才溫過嘅內容？<br><span class="bilingual">Try to summarize what you've learned.</span></p>
+        <div class="card" style="margin-top:20px;">
+            <textarea placeholder="用自己嘅說話寫低重點... Write here..." style="width:100%; height:150px; border:none; font-family:inherit; outline:none; font-size:16px;"></textarea>
         </div>
-
-        <div class="timeline-card">
-            <span class="time-label">20:30 - 21:30</span><br>
-            <strong>✍️ 溫習 Session 3: 選修科複習</strong>
+        <div style="text-align:center; margin:10px 0;">
+            <span style="font-size:30px; cursor:pointer;">🎙️</span>
+            <p style="font-size:12px; color:var(--text-light);">點擊語音輸入，Recall 更輕鬆</p>
         </div>
+        <button class="btn-primary mt-auto" onclick="showCongrats()">提交我的回憶 Submit Recall</button>
+    </div>
 
-        <div class="timeline-card" style="border-color: #A8BFA1;">
-            <span class="time-label">23:00</span><br>
-            <strong>😴 目標上床睡覺時間 Bedtime</strong>
+    <!-- 12. Congrats Screen -->
+    <div id="screen-congrats" class="screen" style="text-align:center; justify-content:center;">
+        <div style="font-size:80px;">🎉</div>
+        <h2 style="color:var(--primary-teal);">MISSION COMPLETE!</h2>
+        <p>你完成咗一個高品質嘅溫習 Section！</p>
+        <div class="xp-badge">+100 XP</div>
+        <div class="card">
+            <p style="margin:0; font-size:14px;">「頭先個 Recall 做得好好！用自己說話重組知識，可以幫你記到 DSE 嗰日！」</p>
         </div>
+        <button class="btn-primary" style="margin-top:30px;" onclick="showScreen('screen-dashboard')">領取獎勵並返回主頁</button>
+    </div>
 
-        <div style="height: 80px;"></div> <!-- Spacer for Nav -->
-
-        <div class="nav-bar">
-            <div class="nav-item active">🏠<br>Home</div>
-            <div class="nav-item">📅<br>Plan</div>
-            <div class="nav-item">📊<br>Stats</div>
-            <div class="nav-item">👤<br>Profile</div>
-        </div>
+    <!-- Nav Bar -->
+    <div id="main-nav" class="nav-bar">
+        <div class="nav-item active" onclick="showScreen('screen-dashboard')">🏠<br>Home</div>
+        <div class="nav-item">📅<br>Plan</div>
+        <div class="nav-item">📊<br>Stats</div>
+        <div class="nav-item">👤<br>Profile</div>
     </div>
 
 </div>
 
 <script>
+    let timerInterval, timeLeft = 25 * 60, timerRunning = false;
+
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+        const nav = document.getElementById('main-nav');
+        if (id === 'screen-dashboard' || id === 'screen-timer' || id === 'screen-active-recall' || id === 'screen-congrats') { nav.classList.add('visible'); } 
+        else { nav.classList.remove('visible'); }
     }
 
-    // 單選邏輯 (例如年級)
-    function selectSingle(el) {
-        const type = el.getAttribute('data-type');
-        document.querySelectorAll(`.option-chip[data-type="${type}"]`).forEach(chip => {
-            chip.classList.remove('selected');
-        });
+    function selectSingle(el, type) {
+        document.querySelectorAll(`.option-chip`).forEach(c => c.classList.remove('selected'));
         el.classList.add('selected');
     }
 
-    // 多選邏輯 (例如選修科)
-    function selectMulti(el) {
-        el.classList.toggle('selected');
+    function updateLevel(el, displayId) {
+        const levels = ["", "1", "2", "3", "4", "5", "5*", "5**"];
+        document.getElementById(displayId).innerText = "Level " + levels[el.value];
     }
 
-    // 心情選擇
-    function selectEmoji(el) {
+    function setMood(el, emoji) {
         document.querySelectorAll('.emoji-item').forEach(e => e.classList.remove('active'));
         el.classList.add('active');
-        const moodText = document.getElementById('mood-text');
-        if (el.innerText === '😫') moodText.innerText = "「感覺壓力較大，AI 已自動調低今日難度。」";
-        if (el.innerText === '😐') moodText.innerText = "「正常發揮，我們會循序漸進。」";
-        if (el.innerText === '😊') moodText.innerText = "「狀態不錯，可以進行高效溫習。」";
-        if (el.innerText === '🔥') moodText.innerText = "「鬥志高昂！今日適合挑戰 Past Paper！」";
+        const hint = document.getElementById('mood-hint');
+        if (emoji === '😫') hint.innerText = "壓力較大，AI 已自動調低難度。";
+        else if (emoji === '😐') hint.innerText = "正常發揮，按計劃進行。";
+        else if (emoji === '😊') hint.innerText = "狀態不錯，可以高效溫習！";
+        else if (emoji === '🔥') hint.innerText = "鬥志高昂！適合衝刺 Past Paper！";
     }
 
-    function goDashboard() {
-        showScreen('screen-loading');
-        setTimeout(() => {
-            showScreen('screen-dashboard');
-        }, 1500);
+    function goDashboard() { showScreen('screen-dashboard'); }
+
+    function openSession(subject, topic) {
+        document.getElementById('timer-subject').innerText = subject;
+        document.getElementById('timer-topic').innerText = topic;
+        showScreen('screen-timer');
     }
+
+    function toggleTimer() {
+        const btn = document.getElementById('btn-timer-control');
+        if (!timerRunning) {
+            timerRunning = true; btn.innerText = "暫停 Mission";
+            timerInterval = setInterval(() => {
+                timeLeft--; updateTimerDisplay();
+                if (timeLeft <= 0) { clearInterval(timerInterval); showScreen('screen-active-recall'); }
+            }, 1000);
+        } else {
+            timerRunning = false; btn.innerText = "繼續 Mission"; clearInterval(timerInterval);
+        }
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(timeLeft / 60); const secs = timeLeft % 60;
+        document.getElementById('timer-clock').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function showCongrats() { showScreen('screen-congrats'); }
 </script>
-
-<style>
-    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
-</style>
 
 </body>
 </html>
